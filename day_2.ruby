@@ -1,4 +1,4 @@
-initial_intcode = File.open(ARGV[0]).map{|input| input.split(',')}.flatten.map(&:to_i)
+initial_intcode = File.read(ARGV[0]).split(?,).map(&:to_i)
 
 def run_intcode(intcode)
   intcode.each_slice(4) do |opcode, pos_1, pos_2, target|

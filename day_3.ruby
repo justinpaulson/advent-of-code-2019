@@ -1,7 +1,4 @@
-pathways = File.open(ARGV[0]).map{|input| input.split(',')}
-
-first_path = pathways[0]
-second_path = pathways[1]
+first_path, second_path = File.readlines(ARGV[0]).map{|input| input.split(?,)}
 
 def get_points_in_path(path)
   current_position = [0,0]

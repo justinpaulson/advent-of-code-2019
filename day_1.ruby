@@ -10,9 +10,7 @@ def full_fuel_needed(weight)
   total_fuel
 end
 
-weights = []
-
-File.open(ARGV[0]).each{|weight| weights << weight.to_i}
+weights = File.readlines(ARGV[0]).map(&:to_i)
 
 part_1_total = weights.sum{|weight| fuel_needed(weight)}
 
