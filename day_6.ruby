@@ -1,9 +1,5 @@
-inputs = File.readlines(ARGV[0]).map{|input| input.split(?)).map(&:strip)}
-
 planets = {}
-
-inputs.each{|o| planets[o[1]] = o[0]}
-
+inputs = File.readlines(ARGV[0]).map{|input| input.split(?)).map(&:strip)}.each{|o| planets[o[1]] = o[0]}
 orbits = 0
 
 planets.each do |planet, upline|
@@ -13,7 +9,7 @@ planets.each do |planet, upline|
   end
 end
 
-puts orbits
+puts "Total Direct and Indiret Orbits: " + orbits.to_s
 
 def san_in_downlines?(start, planets)
   planet = planets["SAN"]
@@ -23,7 +19,7 @@ def san_in_downlines?(start, planets)
     planet = planets[planet]
     @total += 1
   end
-  return false
+  false
 end
 
 jumps = 0
@@ -39,4 +35,4 @@ while upline != "SAN"
   end
 end
 
-puts jumps
+puts "Total jumps from YOU to SAN: " + jumps.to_s
