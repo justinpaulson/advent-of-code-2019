@@ -22,17 +22,9 @@ min_layer.each_slice(width){|layer| puts layer.join('')}
 puts "Number of zeroes: " + zeroes.to_s
 puts "Total ones and twos from row with min 0s: " + ((ones) * (twos)).to_s
 
-image = []
-layers[0].each_with_index do |pixel, i|
-  unless pixel == 2
-    image << pixel
-  else
-    1.upto(layers.count-1) do |layer|
-      unless layers[layer][i] == 2
-        image << layers[layer][i]
-        break
-      end
-    end
+image = layers.inject(layers[0]) do |res, layer|
+  layer.map.with_index do |pixel, i|
+    res[i] == 2 ? pixel : res[i]
   end
 end
 
