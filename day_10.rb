@@ -1,34 +1,13 @@
 asteroids = File.readlines(ARGV[0]).map{|input| input.strip.split('')}
 
 def is_visible(location, target, locations)
-  # puts locations.to_s
   x_diff = target[0] - location[0]
   y_diff = target[1] - location[1]
   g = gcd(y_diff.abs(), x_diff.abs())
-  min_step_x = g == 0 ? x_diff : x_diff / g
-  min_step_y = g == 0 ? y_diff : y_diff / g
-
-  if location == [4,0]
-    puts "Location: [4, 0]"
-    puts "Target: #{target}"
-    puts "GCD: #{g}"
-    puts "Y Diff: #{y_diff}, Min Step Y: #{min_step_y}"
-    puts "X Diff: #{x_diff}, Min Step X: #{min_step_x}"
-    # puts "Step to: #{[(x_diff/min_step_x).abs() - 1, (y_diff/min_step_y).abs() - 1].max}"
-  end
-  last_stop = 0
-  if min_step_x == 0
-    last_stop = (y_diff/min_step_y).abs() - 1
-  elsif min_step_y == 0
-    last_stop = (x_diff/min_step_x).abs() - 1
-  else
-    last_stop = [(x_diff/min_step_x).abs() - 1, (y_diff/min_step_y).abs() - 1].max
-  end
-  1.upto(last_stop) do |offset|
-    if location == [4,0]
-      puts "checking " + [location[0] + (offset*min_step_x), location[1]+(offset * min_step_y)].to_s
-      puts locations.include?([location[0] + (offset*min_step_x), location[1]+(offset * min_step_y)])
-    end
+  g = g == 0 ? 1 : g
+  min_step_x = x_diff / g
+  min_step_y = y_diff / g
+  1.upto(g-1) do |offset|
     return false if locations.include?([location[0] + (offset*min_step_x), location[1]+(offset * min_step_y)])
   end
   true
@@ -37,41 +16,42 @@ end
 def gcd(a, b)
   return b if a == 0
   return a if b == 0
-  a = a.clone
-  b = b.clone
-  if a < b
-    swap = b
-    b = a
-    a = swap
+  a, b = b, a if a < b
+  a % b == 0 ? b : gcd(b, a % b)
+end
+
+def visibles(location, locations)
+  answer = []
+  locations.select{|l| l != location}.each do |target|
+    next if location == target
+    angle = Math.atan2(target[1] - location[1], target[0] - location[0])
+    answer << [target, angle] if is_visible(location, target, locations)
   end
-  r = a % b
-  if r == 0
-    return b
-  else
-    return gcd(b, r)
-  end
+  answer
+end
+
+def print_asteroids(asteroids, max_location, max)
+  system 'clear'
+  asteroids.each{|line| puts line.join('')}
+  puts "Base Location: #{max_location}"
+  puts "Max visible: #{max}"
+  sleep 0.1
 end
 
 asteroid_locations = []
-
-asteroids.each_with_index do |a_line, y|
-  a_line.each_with_index do |items, x|
-    asteroid_locations << [x,y] if items == '#'
+asteroids.each_with_index do |line, y|
+  line.each_with_index do |item, x|
+    asteroid_locations << [x,y] if item == '#'
   end
 end
 
 max = 0
 max_location = []
 asteroid_locations.each do |location|
-  # puts "Testing: #{location}"
   total_visible = 0
   asteroid_locations.each do |target|
     next if location == target
     total_visible += 1 if is_visible(location, target, asteroid_locations)
-  end
-  # puts "Total visible for location #{total_visible}"
-  if location == [3,6]
-    puts "total_visible: #{total_visible}"
   end
   if max < total_visible
     max = total_visible
@@ -79,7 +59,28 @@ asteroid_locations.each do |location|
   end
 end
 
-# puts "asteroids: " + asteroids.to_s
-# puts "Asteroid locations: " + asteroid_locations.count.to_s
-puts "Max locations: " + max.to_s
-puts "Max location: " + max_location.to_s
+destroyed = 0
+asteroid_200 = []
+while (visibles = visibles(max_location, asteroid_locations)).count > 0
+  quads = [
+    visibles.select{|a| a[0][0] >= max_location[0] && a[1] <= 0},
+    visibles.select{|a| a[0][0] >= max_location[0] && a[1] > 0},
+    visibles.select{|a| a[0][0] < max_location[0] && a[1] >= 0},
+    visibles.select{|a| a[0][0] < max_location[0] && a[1] < 0}
+  ]
+
+  quads.each do |quad|
+    quad.sort_by{|a| a[1]}.each do |a|
+      asteroid_locations = asteroid_locations.select{|l| l != a[0]}
+      asteroids[a[0][1]][a[0][0]] = '.'
+      print_asteroids(asteroids, max_location, max)
+      destroyed += 1
+      if destroyed == 200
+        asteroid_200 = [a[0][0],a[0][1]]
+      end
+    end
+  end
+end
+
+puts "200th Asteroid Deleted: #{asteroid_200}"
+puts "Answer: #{asteroid_200[0] * 100 + asteroid_200[1]}"
