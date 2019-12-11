@@ -34,7 +34,7 @@ class IntCode
       code_1 = @intcode[@cursor + 1]
       code_2 = @intcode[@cursor + 2]
       code_3 = @intcode[@cursor + 3]
-      index_1 = modes[0] == '2' ? code_1 + @relative_base : code_1 
+      index_1 = modes[0] == '2' ? code_1 + @relative_base : code_1
       index_2 = modes[1] == '2' ? code_2 + @relative_base : code_2
       index_3 = modes[2] == '2' ? code_3 + @relative_base : code_3
       param_1 = modes[0] == '1' ? index_1 : @intcode[index_1]
@@ -49,7 +49,7 @@ class IntCode
         @cursor += 4
       when 3
         return :stopped unless input = @inputs.pop
-        
+
         @intcode[index_1] = input
         @cursor += 2
       when 4
