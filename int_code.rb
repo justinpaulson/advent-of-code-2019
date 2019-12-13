@@ -1,16 +1,15 @@
 class IntCode
-  attr_accessor :next_intcode, :final_output
+  attr_accessor :next_intcode, :final_output, :inputs
 
-  def initialize(intcode, inputs, print_output = true, next_intcode = nil, final_intcode = true)
+  def initialize(intcode, inputs, print_output = true, next_intcode = nil)
     @cursor = 0
     @intcode = intcode.clone
     @inputs = inputs
     @stopped = true
     @next_intcode = next_intcode
-    @final_intcode = final_intcode
     @print_output = print_output
     @relative_base = 0
-    @intcode.length.upto(10000){|i| @intcode[i] = 0}
+    # @intcode.length.upto(10000){|i| @intcode[i] = 0}
   end
 
   def run
