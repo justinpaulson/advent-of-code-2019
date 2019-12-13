@@ -74,12 +74,12 @@ cycles = []
   moons_for_axis = [moons[0][axis],moons[1][axis],moons[2][axis],moons[3][axis]]
   initial_state = moons_for_axis.map{|m| m.clone}
   velocities = [0,0,0,0]
-  step = 0
+  step = 1
   while true
     step += 1
     moons_for_axis, velocities = move_axis(moons_for_axis, velocities)
     if equal_states(initial_state, moons_for_axis)
-      cycles[axis] = step + 1
+      cycles[axis] = step
       break
     end
   end
