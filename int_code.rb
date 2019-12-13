@@ -9,7 +9,7 @@ class IntCode
     @next_intcode = next_intcode
     @print_output = print_output
     @relative_base = 0
-    # @intcode.length.upto(10000){|i| @intcode[i] = 0}
+    @intcode.length.upto(10000){|i| @intcode[i] = 0}
   end
 
   def run
