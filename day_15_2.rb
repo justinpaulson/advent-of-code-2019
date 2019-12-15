@@ -55,5 +55,5 @@ while still_space(grid)
 
   print_grid(grid)
   puts "Total minutes: #{minutes}"
-  sleep 0.001
+  sleep 0.01
 end

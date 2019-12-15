@@ -51,13 +51,13 @@ def rotate_input(grid, location, input)
       return 4
     elsif check_north(grid, location)
       return 1
-    elsif check_west(grid, locations)
+    elsif check_west(grid, location)
       return 3
     else
       return 2
     end
   when 2
-    if check_west(grid, locations)
+    if check_west(grid, location)
       return 3
     elsif check_south(grid, location)
       return 2
@@ -69,7 +69,7 @@ def rotate_input(grid, location, input)
   when 3
     if check_north(grid, location)
       return 1
-    elsif check_west(grid, locations)
+    elsif check_west(grid, location)
       return 3
     elsif check_south(grid, location)
       return 2
@@ -119,6 +119,7 @@ while output = catcher.outputs.shift
   print_grid(board)
   inputs << new_input
   room.add_input(new_input)
+  sleep 0.01
 end
 
 board[[0,0]] = 'O'
