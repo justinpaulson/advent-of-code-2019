@@ -83,3 +83,14 @@ class IntCode
     @final_output = @output
   end
 end
+
+class IntcodeCatcher
+  attr_accessor :outputs
+  def initialize
+    @outputs = []
+  end
+
+  def add_input input
+    @outputs << input
+  end
+end

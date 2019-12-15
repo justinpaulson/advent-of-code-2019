@@ -1,14 +1,4 @@
 load "int_code.rb"
-class DummyIntcode
-  attr_accessor :inputs
-  def initialize
-    @inputs = []
-  end
-
-  def add_input input
-    @inputs << input
-  end
-end
 
 def print_grid(grid)
   system 'clear'
@@ -38,57 +28,60 @@ def move_droid(droid, direction)
   new_droid
 end
 
-def decode_input(input)
-  case input
-  when 1 
-    return '^'
-  when 2 
-    return 'v'
-  when 3 
-    return '<'
-  when 4 
-    return '>'
-  end
+def check_north(grid, location)
+  grid[[location[0], location[1] - 1]].nil? || grid[[location[0], location[1] - 1]] == '.'
+end
+
+def check_south(grid, location)
+  grid[[location[0], location[1] + 1]].nil? || grid[[location[0], location[1] + 1]] == '.'
+end
+
+def check_west(grid, location)
+  grid[[location[0] - 1, location[1]]].nil? || grid[[location[0] - 1, location[1]]] == '.'
+end
+
+def check_east(grid, location)
+  grid[[location[0] + 1, location[1]]].nil? || grid[[location[0] + 1, location[1]]] == '.'
 end
 
 def rotate_input(grid, location, input)
   case input
   when 1
-    if grid[[location[0] + 1, location[1]]].nil? || grid[[location[0] + 1, location[1]]] == '.'
+    if check_east(grid, location)
       return 4
-    elsif grid[[location[0], location[1] - 1]].nil? || grid[[location[0], location[1] - 1]] == '.'
+    elsif check_north(grid, location)
       return 1
-    elsif grid[[location[0] - 1, location[1]]].nil? || grid[[location[0] - 1, location[1]]] == '.'
+    elsif check_west(grid, locations)
       return 3
     else
       return 2
     end
   when 2
-    if grid[[location[0] - 1, location[1]]].nil? || grid[[location[0] - 1, location[1]]] == '.'
+    if check_west(grid, locations)
       return 3
-    elsif grid[[location[0], location[1] + 1]].nil? || grid[[location[0], location[1] + 1]] == '.'
+    elsif check_south(grid, location)
       return 2
-    elsif grid[[location[0] + 1, location[1]]].nil? || grid[[location[0] + 1, location[1]]] == '.'
+    elsif check_east(grid, location)
       return 4
     else
       return 1
     end
   when 3
-    if grid[[location[0], location[1] - 1]].nil? || grid[[location[0], location[1] - 1]] == '.'
+    if check_north(grid, location)
       return 1
-    elsif grid[[location[0] - 1, location[1]]].nil? || grid[[location[0] - 1, location[1]]] == '.'
+    elsif check_west(grid, locations)
       return 3
-    elsif grid[[location[0], location[1] + 1]].nil? || grid[[location[0], location[1] + 1]] == '.'
+    elsif check_south(grid, location)
       return 2
     else
       return 4
     end
   when 4
-    if grid[[location[0], location[1] + 1]].nil? || grid[[location[0], location[1] + 1]] == '.'
+    if check_south(grid, location)
       return 2
-    elsif grid[[location[0] + 1, location[1]]].nil? || grid[[location[0] + 1, location[1]]] == '.'
+    elsif check_east(grid, location)
       return 4
-    elsif grid[[location[0], location[1] - 1]].nil? || grid[[location[0], location[1] - 1]] == '.'
+    elsif check_north(grid, location)
       return 1
     else
       return 3
@@ -96,20 +89,19 @@ def rotate_input(grid, location, input)
   end
 end
 
-outputs = DummyIntcode.new
-room = IntCode.new(code.clone, [1], false, outputs)
+inputs = [1]
+catcher = IntcodeCatcher.new
+room = IntCode.new(code.clone, inputs.clone, false, catcher)
 room.run
 
 droid = [0,0]
 board = {}
 board[droid] = '@'
-while output = outputs.inputs.shift
+while output = catcher.outputs.shift
   input = inputs.shift
-  new_input = input
   case output
   when 0
-    wall = move_droid(droid, input)
-    board[wall] = '#'
+    board[move_droid(droid, input)] = '#'
     new_input = rotate_input(board, droid, input)
   when 1
     board[droid]= '.'
@@ -121,6 +113,7 @@ while output = outputs.inputs.shift
     droid = move_droid(droid, input)
     oxygen = droid
     board[oxygen] = 'O'
+    new_input = rotate_input(board, droid, input)
   end
   board[oxygen] = 'O' if oxygen
   print_grid(board)
