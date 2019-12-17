@@ -74,8 +74,12 @@ class IntCode
   end
 
   def add_input(input)
-    @inputs.unshift(input)
-    run if @stopped
+    if input.is_a?(Array)
+      input.each{|i| @inputs.unshift(i)}
+    else
+      @inputs.unshift(input)
+    end
+    # run if @stopped
   end
 
   def push_output
