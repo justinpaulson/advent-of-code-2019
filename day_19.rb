@@ -3,37 +3,16 @@ code = File.read(ARGV[0]).split(?,).map(&:to_i)
 
 def check_point(code, x, y)
   catcher = IntcodeCatcher.new
-  computer = IntCode.new(code.clone, [y, x], false, catcher)
-  computer.run
-  output = catcher.outputs.shift
-  case output
-  when 0
-    return '.'
-  when 1
-    return '#'
-  end
+  IntCode.new(code.clone, [y, x], false, catcher).run
+  catcher.outputs.shift == 0 ? '.' : '#'
 end
 
-total = 0
-0.upto(49) do |x|
-  0.upto(49) do |y|
-    total += 1 if check_point(code, x, y) == '#'
-  end
-end
-puts "Total affected area: #{total}"
+puts "Total affected area: #{0.upto(49).inject(0){|i, x| i + 0.upto(49).map{|y| check_point(code, x, y) == '#' ? 1 : 0}.sum}}"
 
-x = 0
-y = 100
 while true
-  case check_point(code, x, y)
-  when '.'
-    x += 1
-  when '#'
-    if check_point(code, x + 99, y - 99) == '#'
-      break
-    else
-      y +=1
-    end
+  if check_point(code, x ||= 0, y ||= 100) == '#' && check_point(code, x + 99, y - 99) == '#'
+    puts "Position of ship in beam: #{((x) * 10000 + (y-99))}"
+    break
   end
+  check_point(code, x, y) == '.' ? x+=1 : y+=1
 end
-puts "Position of ship in beam: #{((x) * 10000 + (y-99))}"
