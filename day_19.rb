@@ -7,7 +7,7 @@ def check_point(code, x, y)
   catcher.outputs.shift == 0 ? '.' : '#'
 end
 
-puts "Total affected area: #{0.upto(49).inject(0){|i, x| i + 0.upto(49).map{|y| check_point(code, x, y) == '#' ? 1 : 0}.sum}}"
+puts "Total affected area: #{0.upto(49).inject(0){|i, x| i + 0.upto(49).inject(0){|j, y| j + (check_point(code, x, y) == '#' ? 1 : 0)}}}"
 
 while true
   if check_point(code, x ||= 0, y ||= 100) == '#' && check_point(code, x + 99, y - 99) == '#'
