@@ -22,36 +22,22 @@ def find_intersects(grid)
         end
       end
     end
-  end  
+  end
   intersects
 end
 
-inputs = []
-catcher = IntcodeCatcher.new
-room_code = code.clone
-room_code[0] = 2
-room = IntCode.new(room_code, inputs, false, catcher)
-
-def ascii_code(input)
-  input.split('').map(&:ord) + [10]
-end
-
+routine = "A,B,A,B,A,C,B,C,A,C"
 move_a = "R,4,L,10,L,10"
 move_b = "L,8,R,12,R,10,R,4"
 move_c = "L,8,L,8,R,10,R,4"
-routine = "A,B,A,B,A,C,B,C,A,C"
 video = "y"
 
-room.add_input(ascii_code(routine))
-room.add_input(ascii_code(move_a))
-room.add_input(ascii_code(move_b))
-room.add_input(ascii_code(move_c))
-room.add_input(ascii_code(video))
-
-room.run
+code[0] = 2
+catcher = IntcodeCatcher.new
+IntCode.new(code, [routine, move_a, move_b, move_c, video], false, catcher).run
 
 board = {}
-y = -6 
+y = -6
 x = 0
 dust = 0
 while output = catcher.outputs.shift
@@ -84,7 +70,7 @@ while output = catcher.outputs.shift
   if x== 0 and y == 0
     print_grid(board)
     sleep 0.1
-  end 
+  end
 end
 print_grid(board)
 puts "Intersections: " + find_intersects(board).to_s

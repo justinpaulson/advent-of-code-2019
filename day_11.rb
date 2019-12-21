@@ -1,17 +1,4 @@
 load "int_code.rb"
-class DummyIntcode
-  attr_accessor :inputs
-  def initialize
-    @inputs = []
-    @count = 0
-    @accessed = 0
-  end
-
-  def add_input input
-    @inputs << input
-    @count += 1
-  end
-end
 
 def move_right(position)
   case position[2]
@@ -67,7 +54,7 @@ def paint_hull(computer, outputs, print = false)
   index = 0
   colored_panels = []
   computer.run
-  while color = outputs.inputs[index]
+  while color = outputs.outputs[index]
     index += 1
     if color == 0
       panels[[position[0],position[1]]] = '.'
@@ -75,7 +62,7 @@ def paint_hull(computer, outputs, print = false)
       colored_panels << position[0..1] unless colored_panels.include?(position[0..1])
       panels[[position[0],position[1]]] = '#'
     end
-    if outputs.inputs[index] == 1
+    if outputs.outputs[index] == 1
       position = move_right(position)
     else
       position = move_left(position)
@@ -87,20 +74,21 @@ def paint_hull(computer, outputs, print = false)
     else
       computer.add_input(0)
     end
+    computer.run
   end
 
-  puts "Total painted (will dissappear in 10s): #{colored_panels.count}"
-  sleep 10
+  puts "Total painted (will dissappear in 5s): #{colored_panels.count}"
+  sleep 5
 end
 
 code = File.read(ARGV[0]).split(?,).map(&:to_i)
 
-outputs = DummyIntcode.new
+outputs = IntcodeCatcher.new
 computer = IntCode.new(code.clone, [0], false, outputs)
 
 paint_hull(computer, outputs)
 
-outputs_2 = DummyIntcode.new
+outputs_2 = IntcodeCatcher.new
 computer_2 = IntCode.new(code.clone, [1], false, outputs_2)
 
 paint_hull(computer_2, outputs_2, true)

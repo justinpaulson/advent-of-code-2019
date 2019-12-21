@@ -4,12 +4,14 @@ class IntCode
   def initialize(intcode, inputs, print_output = true, next_intcode = nil)
     @cursor = 0
     @intcode = intcode.clone
-    @inputs = inputs.reverse
+    @inputs = []
     @stopped = true
     @next_intcode = next_intcode
     @print_output = print_output
     @relative_base = 0
     @intcode.length.upto(10000){|i| @intcode[i] = 0}
+    @final_output = nil
+    add_input(inputs)
   end
 
   def run
@@ -75,18 +77,37 @@ class IntCode
 
   def add_input(input)
     if input.is_a?(Array)
-      input.each{|i| @inputs.unshift(i)}
+      if input.first.is_a?(String)
+        input_ascii_codes(input)
+      else
+        input.each{|i| @inputs.unshift(i)}
+      end
     else
-      @inputs.unshift(input)
+      if input.is_a?(String)
+        input_ascii_codes(input)
+      else
+        @inputs.unshift(input)
+      end
     end
-    # run if @stopped
+  end
+
+  def input_ascii_codes(ascii)
+    if ascii.is_a?(Array)
+      add_input(ascii.map{|i| i.split('').map(&:ord) + [10]}.flatten)
+    else
+      add_input(ascii.split('').map(&:ord) + [10])
+    end
   end
 
   def push_output
-    @next_intcode.add_input(@output.clone) if @next_intcode
-    @final_output = @output
+    if @next_intcode
+      @next_intcode.add_input(@output.clone)
+      @next_intcode.run
+    end
+    @final_output = @output if @output
   end
 end
+
 
 class IntcodeCatcher
   attr_accessor :outputs

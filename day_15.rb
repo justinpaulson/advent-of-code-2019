@@ -89,16 +89,15 @@ def rotate_input(grid, location, input)
   end
 end
 
-inputs = [1]
+input = 1
 catcher = IntcodeCatcher.new
-room = IntCode.new(code.clone, inputs.clone, false, catcher)
+room = IntCode.new(code.clone, input, false, catcher)
 room.run
 
 droid = [0,0]
 board = {}
 board[droid] = '@'
 while output = catcher.outputs.shift
-  input = inputs.shift
   case output
   when 0
     board[move_droid(droid, input)] = '#'
@@ -117,9 +116,9 @@ while output = catcher.outputs.shift
   end
   board[oxygen] = 'O' if oxygen
   print_grid(board)
-  inputs << new_input
   room.add_input(new_input)
-  sleep 0.01
+  room.run
+  input = new_input
 end
 
 board[[0,0]] = 'O'

@@ -6,12 +6,8 @@ def ascii_code(input)
 end
 
 inputs_1 = [
-  "NOT A J",
-  "NOT B T",
-  "AND T J",
-  "NOT C T",
-  "AND D T",
-  "OR T J",
+  "NOT C J",
+  "AND D J",
   "NOT A T",
   "OR T J",
   "WALK"
@@ -37,22 +33,20 @@ inputs_2 = [
 ]
 
 catcher = IntcodeCatcher.new
-IntCode.new(code.clone, inputs_1.map{|i| ascii_code(i)}.flatten, false, catcher).run
+IntCode.new(code.clone, inputs_1, false, catcher).run
 line = ""
 while output = catcher.outputs.shift
-  if output > 300
-    puts line + "Part 1 Damage: " + output.to_s
-    break
-  end
+  break if output > 300
   line += output.chr
 end
 
-IntCode.new(code.clone, inputs_2.map{|i| ascii_code(i)}.flatten, false, catcher).run
+puts line + "Part 1 Damage: " + output.to_s
+
+IntCode.new(code.clone, inputs_2, false, catcher).run
 line = ""
 while output = catcher.outputs.shift
-  if output > 300
-    puts line + "Part 2 Damage: " + output.to_s
-    break
-  end
+  break if output > 300
   line += output.chr
 end
+
+puts line + "Part 1 Damage: " + output.to_s

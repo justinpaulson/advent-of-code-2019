@@ -11,18 +11,18 @@ def find_max(opening, ending, code)
           opening.upto(ending) do |phase_5|
             phases = [phase_1, phase_2, phase_3, phase_4, phase_5]
             next unless phases.uniq == phases
-            
-            amp_5 = IntCode.new(code, [phase_5], false)
-            amp_4 = IntCode.new(code, [phase_4], false, amp_5, false)
-            amp_3 = IntCode.new(code, [phase_3], false, amp_4, false)
-            amp_2 = IntCode.new(code, [phase_2], false, amp_3, false)
-            amp_1 = IntCode.new(code, [phase_1], false, amp_2, false)
+
+            amp_5 = IntCode.new(code.clone, phase_5, false)
+            amp_4 = IntCode.new(code.clone, phase_4, false, amp_5)
+            amp_3 = IntCode.new(code.clone, phase_3, false, amp_4)
+            amp_2 = IntCode.new(code.clone, phase_2, false, amp_3)
+            amp_1 = IntCode.new(code.clone, [phase_1, 0], false, amp_2)
             amp_5.next_intcode = amp_1
 
-            amp_1.add_input(0)
+            amp_1.run
 
             answer = amp_5.final_output
-            
+
             if answer > max
               max = answer
             end

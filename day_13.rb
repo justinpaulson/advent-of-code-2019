@@ -1,16 +1,6 @@
 # \/ turn visuals off or on (only slightly slower with them on) \/
 visuals = true
 load "int_code.rb"
-class DummyIntcode
-  attr_accessor :inputs
-  def initialize
-    @inputs = []
-  end
-
-  def add_input input
-    @inputs << input
-  end
-end
 
 def print_grid(grid)
   system 'clear'
@@ -26,7 +16,7 @@ end
 code = File.read("day_13_input").split(?,).map(&:to_i)
 code[0] = 2
 
-outputs = DummyIntcode.new
+outputs = IntcodeCatcher.new
 game = IntCode.new(code.clone, [], false, outputs)
 game.run
 
@@ -38,7 +28,7 @@ segment_display = 0
 remaining_blocks = 100
 
 while remaining_blocks > 0
-  outputs.inputs.each_slice(3) do |x, y, tile_id|
+  outputs.outputs.each_slice(3) do |x, y, tile_id|
     unless x == -1
       case tile_id
       when 0
@@ -72,6 +62,7 @@ while remaining_blocks > 0
   else
     game.add_input(0)
   end
+  game.run
   remaining_blocks = grid.map{|_, line| line == 'x' ? 1 : 0}.sum
   total = total < remaining_blocks ? remaining_blocks : total
 end
