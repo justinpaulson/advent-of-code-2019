@@ -5,11 +5,7 @@ def ascii_code(input)
   input.split('').map(&:ord) + [10]
 end
 
-inputs = []
-catcher = IntcodeCatcher.new
-computer = IntCode.new(code.clone, inputs, false, catcher)
-
-inputs = [
+inputs_1 = [
   "NOT A J",
   "NOT B T",
   "AND T J",
@@ -18,37 +14,45 @@ inputs = [
   "OR T J",
   "NOT A T",
   "OR T J",
-  # "NOT A J",
-  # "AND D T",
-  # "AND T J",
-  # "NOT B T",
-  # "AND D T",
-  # "AND T J",
-  # "NOT C T",
-  # "AND T J",
-  # "AND D J",
   "WALK"
 ]
 
-inputs.each{|i| computer.add_input(ascii_code(i))}
-computer.run
+inputs_2 = [
+  "NOT C J",
+  "AND D J",
+  "AND H J",
+  "NOT A T",
+  "AND D T",
+  "OR T J",
+  "NOT C T",
+  "AND A T",
+  "AND D T",
+  "AND H T",
+  "OR T J",
+  "NOT B T",
+  "AND D T",
+  "AND H T",
+  "OR T J",
+  "RUN"
+]
 
+catcher = IntcodeCatcher.new
+IntCode.new(code.clone, inputs_1.map{|i| ascii_code(i)}.flatten, false, catcher).run
 line = ""
 while output = catcher.outputs.shift
+  if output > 300
+    puts line + "Part 1 Damage: " + output.to_s
+    break
+  end
   line += output.chr
 end
 
-puts line
-
-puts "Answer is: #{}"
-
-# 4
-
-
-
-# A 1
-# B 2
-# C 3
-# D 4
-
-#   NOT A AND DNOT B  AND  D
+IntCode.new(code.clone, inputs_2.map{|i| ascii_code(i)}.flatten, false, catcher).run
+line = ""
+while output = catcher.outputs.shift
+  if output > 300
+    puts line + "Part 2 Damage: " + output.to_s
+    break
+  end
+  line += output.chr
+end

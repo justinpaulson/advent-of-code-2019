@@ -4,7 +4,7 @@ class IntCode
   def initialize(intcode, inputs, print_output = true, next_intcode = nil)
     @cursor = 0
     @intcode = intcode.clone
-    @inputs = inputs
+    @inputs = inputs.reverse
     @stopped = true
     @next_intcode = next_intcode
     @print_output = print_output
