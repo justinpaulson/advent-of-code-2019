@@ -49,4 +49,4 @@ while output = catcher.outputs.shift
   line += output.chr
 end
 
-puts line + "Part 1 Damage: " + output.to_s
+puts line + "Part 2 Damage: " + output.to_s
