@@ -115,6 +115,10 @@ class IntcodeCatcher
   end
 
   def add_input input
-    @outputs << input
+    if input.is_a?(Array)
+      input.each{|i| @outputs << i}
+    else
+      @outputs << input
+    end
   end
 end
