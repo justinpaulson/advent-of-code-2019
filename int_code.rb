@@ -1,5 +1,5 @@
 class IntCode
-  attr_accessor :next_intcode, :final_output, :inputs
+  attr_accessor :next_intcode, :final_output, :inputs, :stopped
 
   def initialize(intcode, inputs, print_output = true, next_intcode = nil)
     @cursor = 0
@@ -102,7 +102,6 @@ class IntCode
   def push_output
     if @next_intcode
       @next_intcode.add_input(@output.clone)
-      @next_intcode.run
     end
     @final_output = @output if @output
   end
